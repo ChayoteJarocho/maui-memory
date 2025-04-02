@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="maui_memory.MainPage">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            Margin="20,5,20,0">
+
+            <Label
+                Text="Japanese!"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Button x:Name="StartStopButton" Clicked="OnStartButtonClicked" Text="Start" />
+
+            <Label x:Name="LabelMessages" Text="" />
+
+            <Label x:Name="LabelCounts" Text="" />
+
+            <Grid x:Name="TableGrid" IsVisible="False">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Row="0" Grid.Column="0" x:Name="Button00" AutomationId="Button00" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 1,1" />
+                <Button Grid.Row="0" Grid.Column="1" x:Name="Button01" AutomationId="Button01" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 1,2" />
+                <Button Grid.Row="1" Grid.Column="0" x:Name="Button10" AutomationId="Button10" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 2,1" />
+                <Button Grid.Row="1" Grid.Column="1" x:Name="Button11" AutomationId="Button11" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 2,2" />
+                <Button Grid.Row="2" Grid.Column="0" x:Name="Button20" AutomationId="Button20" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 3,1" />
+                <Button Grid.Row="2" Grid.Column="1" x:Name="Button21" AutomationId="Button21" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 3,2" />
+                <Button Grid.Row="3" Grid.Column="0" x:Name="Button30" AutomationId="Button30" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 4,1" />
+                <Button Grid.Row="3" Grid.Column="1" x:Name="Button31" AutomationId="Button31" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 4,2" />
+                <Button Grid.Row="4" Grid.Column="0" x:Name="Button40" AutomationId="Button40" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 5,1" />
+                <Button Grid.Row="4" Grid.Column="1" x:Name="Button41" AutomationId="Button41" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 5,2" />
+
+            </Grid>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>
