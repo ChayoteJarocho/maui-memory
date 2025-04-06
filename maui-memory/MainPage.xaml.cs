@@ -8,6 +8,76 @@ public partial class MainPage : ContentPage
 {
     private const int ExpectedCols = 2;
     private const int ExpectedRows = 5;
+    private readonly ReadOnlyDictionary<string, string> _eng_hir = new Dictionary<string, string>()
+    {
+        { "a", "あ" },
+        { "e", "え" },
+        { "i", "い" },
+        { "o", "お" },
+        { "u", "う" },
+        { "ka", "か" },
+        { "ke", "け" },
+        { "ki", "き" },
+        { "ko", "こ" },
+        { "ku", "く" },
+        { "sa", "さ" },
+        { "se", "せ" },
+        { "shi", "し" },
+        { "so", "そ" },
+        { "su", "す" },
+        { "ta", "た" },
+        { "te", "て" },
+        { "chi", "ち" },
+        { "to", "と" },
+        { "tsu", "つ" },
+        { "na", "な" },
+        { "ne", "ね" },
+        { "ni", "に" },
+        { "no", "の" },
+        { "nu", "ぬ" },
+        { "ha", "は" },
+        { "he", "へ" },
+        { "hi", "ひ" },
+        { "ho", "ほ" },
+        { "fu", "ふ" },
+        { "ma", "ま" },
+        { "me", "め" },
+        { "mi", "み" },
+        { "mo", "も" },
+        { "mu", "む" },
+        { "ya", "や" },
+        { "yu", "ゆ" },
+        { "yo", "よ" },
+        { "ra", "ら" },
+        { "re", "れ" },
+        { "ri", "り" },
+        { "ro", "ろ" },
+        { "ru", "る" },
+        { "wa", "わ" },
+        { "wo", "を" },
+        { "n", "ん" },
+        { "kya", "きゃ" },
+        { "kyu", "きゅ" },
+        { "kyo", "きょ" },
+        { "sha", "しゃ" },
+        { "shu", "しゅ" },
+        { "sho", "しょ" },
+        { "cha", "ちゃ" },
+        { "chu", "ちゅ" },
+        { "cho", "ちょ" },
+        { "nya", "にゃ" },
+        { "nyu", "にゅ" },
+        { "nyo", "にょ" },
+        { "hya", "ひゃ" },
+        { "hyu", "ひゅ" },
+        { "hyo", "ひょ" },
+        { "mya", "みゃ" },
+        { "myu", "みゅ" },
+        { "myo", "みょ" },
+        { "rya", "りゃ" },
+        { "ryu", "りゅ" },
+        { "ryo", "りょ" },
+    }.AsReadOnly();
     private readonly ReadOnlyDictionary<string, string> _eng_kat = new Dictionary<string, string>()
     {
         { "a", "ア" },
@@ -86,6 +156,8 @@ public partial class MainPage : ContentPage
     private uint _rightAnswers = 0;
     private uint _wrongAnswers = 0;
 
+    private ReadOnlyDictionary<string, string> SelectedDictionary => ConversionHiragana.IsChecked ? _eng_hir : _eng_kat;
+
     public MainPage()
     {
         InitializeComponent();
@@ -108,7 +180,7 @@ public partial class MainPage : ContentPage
         if (sender is not Button button || button != StartStopButton) return;
 
         StartStopButton.IsEnabled = false;
-        StartStopButton.Text = "Stop";
+        StartStopButton.Text = "Alto";
         StartStopButton.Clicked -= OnStartButtonClicked!;
         StartStopButton.Clicked += OnStopButtonClicked!;
         StartStopButton.IsEnabled = true;
@@ -117,9 +189,23 @@ public partial class MainPage : ContentPage
         _wrongAnswers = 0;
         UpdateCountsLabel();
 
+        ConversionRadioLayout.IsVisible = false;
+        ConversionHiragana.IsEnabled = false;
+        ConversionKatakana.IsEnabled = false;
+        ConversionLabel.IsVisible = false;
+
         TableGrid.IsVisible = true;
 
-        _currentSymbols = new(_eng_kat);
+        if (ConversionHiragana.IsChecked)
+        {
+            Debug.Assert(!ConversionKatakana.IsChecked);
+            _currentSymbols = new(_eng_hir);
+        }
+        else if (ConversionKatakana.IsChecked)
+        {
+            Debug.Assert(!ConversionHiragana.IsChecked);
+            _currentSymbols = new(_eng_kat);
+        }
 
         // Initial fill of the cells, which will remove the first 5 kvps from _currentSymbols.
         for (int i = 0; i < _buttons.Length; i++)
@@ -138,13 +224,18 @@ public partial class MainPage : ContentPage
         if (sender is not Button button || button != StartStopButton) return;
 
         StartStopButton.IsEnabled = false;
-        StartStopButton.Text = "Start";
+        StartStopButton.Text = "Empezar";
         StartStopButton.Clicked -= OnStopButtonClicked!;
         StartStopButton.Clicked += OnStartButtonClicked!;
         StartStopButton.IsEnabled = true;
 
         LabelMessages.Text = "";
         LabelCounts.Text = "";
+
+        ConversionRadioLayout.IsVisible = true;
+        ConversionHiragana.IsEnabled = true;
+        ConversionKatakana.IsEnabled = true;
+        ConversionLabel.IsVisible = true;
 
         TableGrid.IsVisible = false;
 
@@ -238,12 +329,19 @@ public partial class MainPage : ContentPage
             Debug.Assert(_leftButton.BindingContext is Color);
             Debug.Assert(_rightButton.BindingContext is Color);
             // Confirm if they both match
-            if (_eng_kat.TryGetValue(_leftButton.Text, out string? currentValue) && currentValue == _rightButton.Text)
+
+            // Prevent more presses
+            _leftButton.IsEnabled = false;
+            _rightButton.IsEnabled = false;
+
+            if (SelectedDictionary.TryGetValue(_leftButton.Text, out string? currentValue) && currentValue == _rightButton.Text)
             {
                 _rightAnswers++;
+                
                 // Flash both buttons green
                 await FlashButtonGreenAsync(_leftButton);
                 await FlashButtonGreenAsync(_rightButton);
+
                 if (_currentSymbols.Any())
                 {
                     // Replace both button texts with new ones
@@ -251,18 +349,15 @@ public partial class MainPage : ContentPage
                     Debug.Assert(!_currentSymbols.ContainsKey(newKey));
                     _leftButton.Text = newKey;
                     _rightButton.Text = newValue;
-
-                    RandomizeButtonTexts();
                 }
                 else
                 {
                     _leftButton.Text = string.Empty;
                     _rightButton.Text = string.Empty;
-                    _leftButton.IsEnabled = false;
-                    _rightButton.IsEnabled = false;
                     ChangeButtonColor(_leftButton, Colors.DimGray);
                     ChangeButtonColor(_rightButton, Colors.DimGray);
                 }
+
             }
             // They didn't match
             else
@@ -272,10 +367,16 @@ public partial class MainPage : ContentPage
                 // Flash both buttons red
                 await FlashButtonRedAsync(_leftButton);
                 await FlashButtonRedAsync(_rightButton);
+
                 // Reset both
                 MarkUnselectedButton(_leftButton);
                 MarkUnselectedButton(_rightButton);
             }
+            
+            // Restore pressing
+            _leftButton.IsEnabled = true;
+            _rightButton.IsEnabled = true;
+
 
             // Finally, clear both, regardless of outcome
             _leftButton = null;
@@ -286,20 +387,20 @@ public partial class MainPage : ContentPage
             // Final check: if all buttons are disabled, the game is done
             if (!_buttons.Any(row => row[0].IsEnabled || row[1].IsEnabled))
             {
-                LabelMessages.Text = "You won!";
+                LabelMessages.Text = "Fin";
             }
         }
     }
 
     private void UpdateCountsLabel()
     {
-        LabelCounts.Text = $"Right: {_rightAnswers}, Wrong: {_wrongAnswers}";
+        LabelCounts.Text = $"Correctas: {_rightAnswers}, Erróneas: {_wrongAnswers}";
     }
 
     private void RandomizeButtonTexts()
     {
-        var leftTexts = _buttons.Select(row => row[0].Text).OrderBy(_ => _random.Next()).ToList();
-        var rightTexts = _buttons.Select(row => row[1].Text).OrderBy(_ => _random.Next()).ToList();
+        List<string> leftTexts = _buttons.Select(row => row[0].Text).OrderBy(_ => _random.Next()).ToList();
+        List<string> rightTexts = _buttons.Select(row => row[1].Text).OrderBy(_ => _random.Next()).ToList();
         
         Debug.Assert(leftTexts.Count() == _buttons.Length);
         Debug.Assert(rightTexts.Count() == _buttons.Length);
@@ -337,18 +438,6 @@ public partial class MainPage : ContentPage
             button.BindingContext = originalColor;
         }
         button.BackgroundColor = color;
-    }
-
-    private IEnumerable<int> GetRandomNumberSequence(int count)
-    {
-        List<int> numbers = Enumerable.Range(0, count).ToList();
-        for (int c = 0; c < count; c++)
-        {
-            int pos = _random.Next(0, numbers.Count);
-            int number = numbers.ElementAt(pos);
-            numbers.RemoveAt(pos);
-            yield return number;
-        }
     }
 }
 

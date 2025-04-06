@@ -3,6 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="maui_memory.MainPage">
 
+    <ContentPage.Resources>
+        <Style TargetType="RadioButton" x:Key="RadioButtonLikeRegularButton">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBackgroundColor}, Dark={StaticResource ButtonBackgroundColor}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonTextColor}, Dark={StaticResource ButtonTextColor}}" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource ButtonBorderColor}, Dark={StaticResource ButtonBorderColor}}" />
+            <Setter Property="BorderWidth" Value="1" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup Name="CommonStates">
+                    <VisualState Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBackgroundColor}, Dark={StaticResource ButtonBackgroundColor}}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Checked">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColor}}" />
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonTextColor}, Dark={StaticResource ButtonTextColor}}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
     <ScrollView>
 
         <VerticalStackLayout
@@ -11,9 +39,20 @@
             Margin="20,5,20,0">
 
             <Label
-                Text="Japanese!"
+                Text="つろりくしこ"
                 Style="{StaticResource Headline}"
                 SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                x:Name="ConversionLabel"
+                Text="Elige práctica:"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level3" />
+
+            <HorizontalStackLayout Padding="5" Spacing="5" x:Name="ConversionRadioLayout" HorizontalOptions="Center">
+                <RadioButton GroupName="Conversion" x:Name="ConversionHiragana" Style="{StaticResource RadioButtonLikeRegularButton}" Content="Hiragana" IsChecked="true" />
+                <RadioButton GroupName="Conversion" x:Name="ConversionKatakana" Style="{StaticResource RadioButtonLikeRegularButton}" Content="Katakana" />
+            </HorizontalStackLayout>
 
             <Button x:Name="StartStopButton" Clicked="OnStartButtonClicked" Text="Start" />
 
@@ -35,16 +74,16 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Row="0" Grid.Column="0" x:Name="Button00" AutomationId="Button00" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 1,1" />
-                <Button Grid.Row="0" Grid.Column="1" x:Name="Button01" AutomationId="Button01" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 1,2" />
-                <Button Grid.Row="1" Grid.Column="0" x:Name="Button10" AutomationId="Button10" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 2,1" />
-                <Button Grid.Row="1" Grid.Column="1" x:Name="Button11" AutomationId="Button11" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 2,2" />
-                <Button Grid.Row="2" Grid.Column="0" x:Name="Button20" AutomationId="Button20" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 3,1" />
-                <Button Grid.Row="2" Grid.Column="1" x:Name="Button21" AutomationId="Button21" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 3,2" />
-                <Button Grid.Row="3" Grid.Column="0" x:Name="Button30" AutomationId="Button30" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 4,1" />
-                <Button Grid.Row="3" Grid.Column="1" x:Name="Button31" AutomationId="Button31" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 4,2" />
-                <Button Grid.Row="4" Grid.Column="0" x:Name="Button40" AutomationId="Button40" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 5,1" />
-                <Button Grid.Row="4" Grid.Column="1" x:Name="Button41" AutomationId="Button41" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 5,2" />
+                <Button Grid.Row="0" Grid.Column="0" x:Name="Button00" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 1,1" />
+                <Button Grid.Row="0" Grid.Column="1" x:Name="Button01" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 1,2" />
+                <Button Grid.Row="1" Grid.Column="0" x:Name="Button10" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 2,1" />
+                <Button Grid.Row="1" Grid.Column="1" x:Name="Button11" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 2,2" />
+                <Button Grid.Row="2" Grid.Column="0" x:Name="Button20" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 3,1" />
+                <Button Grid.Row="2" Grid.Column="1" x:Name="Button21" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 3,2" />
+                <Button Grid.Row="3" Grid.Column="0" x:Name="Button30" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 4,1" />
+                <Button Grid.Row="3" Grid.Column="1" x:Name="Button31" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 4,2" />
+                <Button Grid.Row="4" Grid.Column="0" x:Name="Button40" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 5,1" />
+                <Button Grid.Row="4" Grid.Column="1" x:Name="Button41" Clicked="OnButtonClickedAsync" Margin="0,5,5,0" Text="Button 5,2" />
 
             </Grid>
 
