@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "maui-memory.slnx"
+    "dotnet.defaultSolution": "maui-memory.slnx",
+    "dotnet.startupProject": "maui-memory/maui-memory.csproj"
 }

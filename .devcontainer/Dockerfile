@@ -9,7 +9,10 @@ FROM mcr.microsoft.com/devcontainers/dotnet:2-10.0-noble
 # libgl1           : emulator OpenGL software renderer (Swiftshader)
 # libpulse0        : emulator audio
 # libc6-i386/lib32z1 : 32-bit deps for some emulator binaries
-# libncurses5      : required by some Android SDK binaries
+# libncurses6      : required by some Android SDK binaries
+# xvfb             : virtual framebuffer — gives the emulator a display to render into
+# x11vnc           : VNC server that shares the Xvfb display
+# novnc            : browser-based VNC client + websockify proxy (port 6080)
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
         openjdk-21-jdk-headless \
@@ -20,7 +23,10 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
         libc6-i386 \
         lib32z1 \
         libstdc++6 \
-        libncurses5 \
+        libncurses6 \
+        xvfb \
+        x11vnc \
+        novnc \
     && rm -rf /var/lib/apt/lists/*
 
 # ── 2. Java environment ───────────────────────────────────────────────────────
