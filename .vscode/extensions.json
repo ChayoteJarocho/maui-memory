@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        // .NET development
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        // .NET MAUI — emulator picker, deploy/debug integration
+        "ms-dotnettools.dotnet-maui",
+        // XML editor for AndroidManifest.xml, .csproj, .xaml files
+        "redhat.vscode-xml",
+        // Docker and Dev Containers support
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers"
+    ]
+}
