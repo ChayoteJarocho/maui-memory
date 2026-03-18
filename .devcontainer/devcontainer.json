@@ -1,0 +1,65 @@
+{
+    "name": "MAUI Memory (Android)",
+
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+
+    "workspaceFolder": "/workspaces/maui-memory",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/maui-memory,type=bind,consistency=cached",
+
+    // ── Container runtime arguments ───────────────────────────────────────────
+    "runArgs": [
+        // Pass /dev/kvm for hardware-accelerated Android emulator.
+        // Without this the emulator falls back to software mode and is unusably slow.
+        "--device=/dev/kvm",
+        // Allow the emulator's internal hypervisor to create nested VMs.
+        "--cap-add=KVM",
+        // Needed for the emulator's internal networking (runs its own DHCP).
+        "--cap-add=NET_ADMIN",
+        // Avoids bind-mount permission errors on SELinux hosts.
+        "--security-opt=label=disable"
+    ],
+
+    "containerEnv": {
+        "ANDROID_HOME": "/opt/android-sdk",
+        "ANDROID_SDK_ROOT": "/opt/android-sdk",
+        // Use Swiftshader (software OpenGL) — no GPU passthrough in the container.
+        "ANDROID_EMULATOR_USE_SYSTEM_LIBS": "1"
+    },
+
+    // 5554: emulator console, 5555: ADB over TCP
+    // Lets you run `adb connect localhost:5555` from the host if needed.
+    "forwardPorts": [5554, 5555],
+    "portsAttributes": {
+        "5554": { "label": "Android Emulator Console", "onAutoForward": "silent" },
+        "5555": { "label": "ADB over TCP", "onAutoForward": "silent" }
+    },
+
+    // Creates the default AVD on first container creation (idempotent).
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+
+    // Fixes /dev/kvm permissions inside the container on every start.
+    // Works on any host regardless of kvm group GID — only affects the container.
+    "postStartCommand": "sudo chmod a+rw /dev/kvm 2>/dev/null || true",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.dotnet-maui",
+                "ms-dotnettools.csharp",
+                "redhat.vscode-xml",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode-remote.remote-containers"
+            ],
+            "settings": {
+                "dotnet.defaultSolution": "maui-memory.slnx",
+                "dotnetAndroidSdk.androidSdkDirectory": "/opt/android-sdk",
+                "java.home": "/usr/lib/jvm/java-21-openjdk-amd64",
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    }
+}
